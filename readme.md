@@ -1,6 +1,6 @@
 # NEPA: Next-Embedding Prediction Makes Strong Vision Learners
 
-[![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b?logo=arxiv&logoColor=b31b1b)]()
+[![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b?logo=arxiv&logoColor=b31b1b)](https://arxiv.org/abs/2512.16922)
 [![Project Page](https://img.shields.io/badge/Project-Website-5B7493?logo=googlechrome&logoColor=5B7493)](https://sihanxu.github.io/nepa)
 [![Hugging Model Card](https://img.shields.io/badge/huggingface-model:NEPA-lightblue)](https://huggingface.co/collections/SixAILab/nepa)
 
@@ -16,7 +16,7 @@ Next-Embedding Predictive Autoregression. An image is split into patches and emb
 @article{six2025nepa,
   title={Next-Embedding Prediction Makes Strong Vision Learners},
   author={Sihan Xu and Ziqiao Ma and Wenhao Chai and Xuweiyi Chen and Weiyang Jin and Joyce Chai and Saining Xie and Stella X. Yu},
-  journal={arXiv preprint arXiv:},
+  journal={arXiv preprint arXiv: 2512.16922},
   year={2025}
 }
 ```
