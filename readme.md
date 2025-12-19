@@ -7,7 +7,7 @@
 This is a PyTorch/GPU re-implementation of Next-Embedding Prediction Makes Strong Vision Learners.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/760a7ca4-1aa4-43d9-8731-ab8b33e463d5" width="350">
+  <img src="https://cdn-uploads.huggingface.co/production/uploads/63f233820a16587ea967adc2/f3ybK_7Mf7rMekc05AcWH.png" width="350">
 </p>
 
 Next-Embedding Predictive Autoregression. An image is split into patches and embedded into a sequence. An autoregressive model predicts the next embedding from previous ones.
