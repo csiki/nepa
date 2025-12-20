@@ -24,7 +24,7 @@
   "pos_embed_jitter": null,
   "pos_embed_rescale": 2.0,
   "pos_embed_shift": null,
-  "qk_norm": false,
+  "qk_norm": true,
   "qk_norm_affine": false,
   "qk_norm_bias": false,
   "qkv_bias": true,
