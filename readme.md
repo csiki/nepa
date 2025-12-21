@@ -2,7 +2,7 @@
 
 [![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b?logo=arxiv&logoColor=b31b1b)](https://arxiv.org/abs/2512.16922)
 [![Project Page](https://img.shields.io/badge/Project-Website-5B7493?logo=googlechrome&logoColor=5B7493)](https://sihanxu.github.io/nepa)
-[![Hugging Model Card](https://img.shields.io/badge/huggingface-model:NEPA-lightblue)](https://huggingface.co/collections/SixAILab/nepa)
+[![Hugging Model Card](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-blue)](https://huggingface.co/collections/SixAILab/nepa)
 
 This is a PyTorch/GPU re-implementation of Next-Embedding Prediction Makes Strong Vision Learners.
 
