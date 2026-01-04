@@ -21,8 +21,8 @@ CONFIG_NAME="configs/pretrain/nepa-base-patch14-224"
 DATASET_PATH="/fast/imagenet-1k-hf"
 OUTPUT_DIR="outputs/${EXPERIMENT_NAME}"
 
-TOTAL_BATCH_SIZE=4096
-PER_DEVICE_BATCH_SIZE=256
+TOTAL_BATCH_SIZE=1024  # 4096
+PER_DEVICE_BATCH_SIZE=128  # 256
 GRAD_ACCUM_STEPS=$(( TOTAL_BATCH_SIZE / (PER_DEVICE_BATCH_SIZE * NGPU * WORLD_SIZE) ))
 NUM_EPOCHS=1600
 
@@ -31,32 +31,22 @@ LEARNING_RATE=$(python -c "print(${BASE_LEARNING_RATE} * ${TOTAL_BATCH_SIZE} / 2
 
 DATALOADER_NUM_WORKERS=$((4 * NGPU))
 
+# TODO changes: logging steps below (was 100), TOTAL_BATCH_SIZE, PER_DEVICE_BATCH_SIZE, torchrun remove below
+
 # ========================
 export HF_HUB_CACHE='/fast/hub'
 export HF_DATASETS_CACHE='/fast/datasets'
 export WANDB_PROJECT=$WANDB_PROJECT
 
-# ========================
-torchrun \
-    --nnodes=$WORLD_SIZE  \
-    --node_rank=$RANK \
-    --master_addr=$MASTER_ADDR \
-    --master_port=$MASTER_PORT \
-    --nproc_per_node $NGPU run_nepa.py \
-    \
-    --ddp_backend nccl \
-    --ddp_find_unused_parameters False \
-    \
+python run_nepa.py \
     --config_name $CONFIG_NAME \
-    --image_processor_name  $CONFIG_NAME \
+    --image_processor_name $CONFIG_NAME \
     --dataset_name $DATASET_PATH \
     --load_from_disk True \
     --dataloader_drop_last True \
-    \
     --do_train \
     --output_dir $OUTPUT_DIR \
     --remove_unused_columns False \
-    \
     --num_train_epochs $NUM_EPOCHS \
     --per_device_train_batch_size $PER_DEVICE_BATCH_SIZE \
     --gradient_accumulation_steps $GRAD_ACCUM_STEPS \
@@ -67,19 +57,63 @@ torchrun \
     --adam_beta1 0.9 \
     --adam_beta2 0.95 \
     --optim adamw_torch \
-    \
     --logging_strategy steps \
-    --logging_steps 100 \
+    --logging_steps 2 \
     --save_strategy steps \
     --save_steps 50000 \
-    \
     --seed 1337 \
     --bf16 True \
-    \
     --dataloader_num_workers $DATALOADER_NUM_WORKERS \
     --dataloader_persistent_workers True \
     --dataloader_pin_memory False \
-    \
     --report_to wandb \
     --run_name $EXPERIMENT_NAME \
-    --use_intermediate_loss True
+    --use_intermediate_loss False
+
+# # ========================
+# torchrun \
+#     --nnodes=$WORLD_SIZE  \
+#     --node_rank=$RANK \
+#     --master_addr=$MASTER_ADDR \
+#     --master_port=$MASTER_PORT \
+#     --nproc_per_node $NGPU run_nepa.py \
+#     \
+#     --ddp_backend nccl \
+#     --ddp_find_unused_parameters False \
+#     \
+#     --config_name $CONFIG_NAME \
+#     --image_processor_name  $CONFIG_NAME \
+#     --dataset_name $DATASET_PATH \
+#     --load_from_disk True \
+#     --dataloader_drop_last True \
+#     \
+#     --do_train \
+#     --output_dir $OUTPUT_DIR \
+#     --remove_unused_columns False \
+#     \
+#     --num_train_epochs $NUM_EPOCHS \
+#     --per_device_train_batch_size $PER_DEVICE_BATCH_SIZE \
+#     --gradient_accumulation_steps $GRAD_ACCUM_STEPS \
+#     --learning_rate $LEARNING_RATE \
+#     --lr_scheduler_type cosine \
+#     --warmup_ratio 0.025 \
+#     --weight_decay 0.05 \
+#     --adam_beta1 0.9 \
+#     --adam_beta2 0.95 \
+#     --optim adamw_torch \
+#     \
+#     --logging_strategy steps \
+#     --logging_steps 2 \
+#     --save_strategy steps \
+#     --save_steps 50000 \
+#     \
+#     --seed 1337 \
+#     --bf16 True \
+#     \
+#     --dataloader_num_workers $DATALOADER_NUM_WORKERS \
+#     --dataloader_persistent_workers True \
+#     --dataloader_pin_memory False \
+#     \
+#     --report_to wandb \
+#     --run_name $EXPERIMENT_NAME \
+#     --use_intermediate_loss True
