@@ -239,6 +239,8 @@ class EmbeddedModelingOutput(ModelOutput):
     """
 
     loss: Optional[torch.FloatTensor] = None
+    loss_final: Optional[torch.FloatTensor] = None
+    loss_intermediate: Optional[torch.FloatTensor] = None
     hidden_states: Optional[tuple[torch.FloatTensor, ...]] = None
     attentions: Optional[tuple[torch.FloatTensor, ...]] = None
 
@@ -860,12 +862,14 @@ class ViTNepaForPreTraining(ViTNepaPreTrainedModel):
         r"""
         TODO
         ```"""
+        use_intermediate = self.config.use_intermediate_loss
 
         outputs: BaseModelOutputWithEmbedding = self.vit_nepa(
             pixel_values,
             position_ids=position_ids,
             head_mask=head_mask,
             output_attentions=output_attentions,
+            output_hidden_states=use_intermediate,
             interpolate_pos_encoding=interpolate_pos_encoding,
             is_pretraining=True,
             **kwargs,
@@ -874,10 +878,26 @@ class ViTNepaForPreTraining(ViTNepaPreTrainedModel):
         sequence_input = outputs.input_embedding
         sequence_output = outputs.last_hidden_state
 
-        embedded_loss = prediction_loss(sequence_input, sequence_output)
+        loss_final = prediction_loss(sequence_input, sequence_output)
+
+        loss_intermediate = None
+        if use_intermediate and outputs.hidden_states is not None:
+            intermediate_losses = []
+            for layer_hidden in outputs.hidden_states[1:-1]:
+                layer_loss = prediction_loss(sequence_input, layer_hidden)
+                intermediate_losses.append(layer_loss)
+            if intermediate_losses:
+                loss_intermediate = torch.stack(intermediate_losses).mean()
+
+        if loss_intermediate is not None:
+            total_loss = loss_final + loss_intermediate
+        else:
+            total_loss = loss_final
 
         return EmbeddedModelingOutput(
-            loss=embedded_loss,
+            loss=total_loss,
+            loss_final=loss_final,
+            loss_intermediate=loss_intermediate,
             hidden_states=outputs.hidden_states,
             attentions=outputs.attentions,
         )

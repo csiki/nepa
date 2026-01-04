@@ -18,7 +18,7 @@ EXPERIMENT_NAME="nepa-large-patch14-224"
 WANDB_PROJECT="Nepa-Pretrain"
 
 CONFIG_NAME="configs/pretrain/nepa-large-patch14-224"
-DATASET_PATH="data/imagenet-1k-hf"
+DATASET_PATH="/fast/imagenet-1k-hf"
 OUTPUT_DIR="outputs/${EXPERIMENT_NAME}"
 
 TOTAL_BATCH_SIZE=4096
@@ -32,6 +32,8 @@ LEARNING_RATE=$(python -c "print(${BASE_LEARNING_RATE} * ${TOTAL_BATCH_SIZE} / 2
 DATALOADER_NUM_WORKERS=$((4 * NGPU))
 
 # ========================
+export HF_HUB_CACHE='/fast/hub'
+export HF_DATASETS_CACHE='/fast/datasets'
 export WANDB_PROJECT=$WANDB_PROJECT
 
 # ========================

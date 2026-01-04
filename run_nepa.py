@@ -90,6 +90,25 @@ class EnhancedTrainer(Trainer):
         self.ema_decay = ema_decay
         self.use_ema = use_ema
         self.ema_model = None
+        self._extra_losses = {}
+
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        outputs = model(**inputs)
+        loss = outputs.loss
+        if outputs.loss_final is not None:
+            self._extra_losses = {
+                "loss_final": outputs.loss_final.detach(),
+                "loss_intermediate": outputs.loss_intermediate.detach() if outputs.loss_intermediate is not None else None,
+            }
+        return (loss, outputs) if return_outputs else loss
+
+    def log(self, logs, start_time=None):
+        if self._extra_losses:
+            for k, v in self._extra_losses.items():
+                if v is not None:
+                    logs[k] = v.item() if torch.is_tensor(v) else v
+            self._extra_losses = {}
+        super().log(logs, start_time)
 
     def get_decay_parameter_names(self, model) -> list[str]:
         forbidden_name_patterns = [r"bias", r"layernorm", r"rmsnorm", r"layer_scale", r"(?:^|\.)norm(?:$|\.)", r"_norm(?:$|\.)"]
@@ -333,6 +352,10 @@ class ModelArguments:
         default=None,
         metadata={"help": "Learning rate for embedding layer parameters."},
     )
+    use_intermediate_loss: bool = field(
+        default=False,
+        metadata={"help": "Apply NEPA loss at every intermediate layer."},
+    )
 
 
 def main():
@@ -469,6 +492,7 @@ def main():
         token=model_args.token,
         trust_remote_code=model_args.trust_remote_code,
     )
+    config.use_intermediate_loss = model_args.use_intermediate_loss
     if model_args.model_name_or_path:
         model = ViTNepaForPreTraining.from_pretrained(
             model_args.model_name_or_path,

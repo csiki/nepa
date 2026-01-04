@@ -2,9 +2,13 @@
 NGPU=$(python -c "import torch; print(torch.cuda.device_count())")
 
 MODEL_NAME="SixAILab/nepa-large-patch14-224-sft"
-DATASET_PATH="data/imagenet-1k-hf"
+DATASET_PATH="/fast/imagenet-1k-hf"
 
 DATALOADER_NUM_WORKERS=$((4 * NGPU))
+
+# ========================
+export HF_HUB_CACHE='/fast/hub'
+export HF_DATASETS_CACHE='/fast/datasets'
 
 # ========================
 torchrun \

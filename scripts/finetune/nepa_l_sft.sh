@@ -6,7 +6,7 @@ WANDB_PROJECT="Nepa-SFT"
 
 MODEL_NAME="SixAILab/nepa-large-patch14-224-sft"
 MODEL_REVISION="init"
-DATASET_PATH="data/imagenet-1k-hf"
+DATASET_PATH="/fast/imagenet-1k-hf"
 OUTPUT_DIR="outputs/${EXPERIMENT_NAME}"
 
 TOTAL_BATCH_SIZE=1024
@@ -19,6 +19,8 @@ LEARNING_RATE=$(python -c "print(${BASE_LEARNING_RATE} * ${TOTAL_BATCH_SIZE} / 2
 DATALOADER_NUM_WORKERS=$((4 * NGPU))
 
 # ========================
+export HF_HUB_CACHE='/fast/hub'
+export HF_DATASETS_CACHE='/fast/datasets'
 export WANDB_PROJECT=$WANDB_PROJECT
 
 # ========================

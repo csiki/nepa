@@ -84,6 +84,8 @@ class ViTNepaConfig(PretrainedConfig):
             Amount of jitter applied to positional embedding coordinates as a training augmentation.
         pos_embed_rescale (`float`, *optional*, defaults to 2.0):
             Rescaling factor applied to positional embedding coordinates (e.g. when interpolating to new resolutions).
+        use_intermediate_loss (`bool`, *optional*, defaults to `False`):
+            Whether to apply NEPA loss at every intermediate layer (deep supervision).
         kwargs:
             Additional keyword arguments passed to [`PretrainedConfig`].
 
@@ -131,6 +133,7 @@ class ViTNepaConfig(PretrainedConfig):
         pos_embed_shift: Optional[float] = None,
         pos_embed_jitter: Optional[float] = None,
         pos_embed_rescale: Optional[float] = 2.0,
+        use_intermediate_loss: bool = False,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -160,6 +163,7 @@ class ViTNepaConfig(PretrainedConfig):
         self.pos_embed_shift = pos_embed_shift
         self.pos_embed_jitter = pos_embed_jitter
         self.pos_embed_rescale = pos_embed_rescale
+        self.use_intermediate_loss = use_intermediate_loss
 
 
 __all__ = ["ViTNepaConfig"]
