@@ -18,7 +18,7 @@ EXPERIMENT_NAME="nepa-base-patch14-224"
 WANDB_PROJECT="Nepa-Pretrain"
 
 CONFIG_NAME="configs/pretrain/nepa-base-patch14-224"
-DATASET_PATH="/fast/imagenet-1k-hf"
+# DATASET_PATH="/fast/imagenet-1k-hf"  # provide outside of this script
 OUTPUT_DIR="outputs/${EXPERIMENT_NAME}"
 
 TOTAL_BATCH_SIZE=1024  # 4096
